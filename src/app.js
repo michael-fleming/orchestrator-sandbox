@@ -22,6 +22,11 @@ function createApp() {
     if (req.method === "GET" && url.pathname === "/orders") {
       return send(res, 200, _.orderBy(orders, ["createdAt"], ["desc"]));
     }
+    const match = url.pathname.match(/^\/orders\/([\w-]+)$/);
+    if (req.method === "GET" && match) {
+      const order = _.find(orders, { id: match[1] });
+      return order ? send(res, 200, order) : send(res, 404, { error: `order ${match[1]} not found` });
+    }
     return send(res, 404, { error: "not found" });
   });
 }
