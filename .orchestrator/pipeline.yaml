@@ -1,0 +1,9 @@
+# Input for the orchestrator's pipeline generator (see docs/adding-workflows.md and the pipeline demo).
+version: 1
+templates: { repo: michael-fleming/ci-templates, version: v1 }
+build:
+  profile: docker
+  inputs: { dockerfile: Dockerfile, platforms: linux/amd64 }
+  hooks: [pre-build]
+test: { stack: node, inputs: { node-version: "22" } }
+scan: { scanner: grype, inputs: { sbom-format: cyclonedx-json } }
