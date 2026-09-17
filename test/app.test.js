@@ -22,3 +22,14 @@ test("lists orders newest first", async () => {
   const body = await (await fetch(`${base}/orders`)).json();
   assert.deepStrictEqual(body.map((o) => o.id), ["1002", "1001"]);
 });
+
+test("looks up an order by id", async () => {
+  const res = await fetch(`${base}/orders/1001`);
+  assert.strictEqual(res.status, 200);
+  assert.strictEqual((await res.json()).customer, "acme");
+});
+
+test("returns 404 for an unknown order", async () => {
+  const res = await fetch(`${base}/orders/9999`);
+  assert.strictEqual(res.status, 404);
+});
