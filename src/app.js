@@ -22,6 +22,10 @@ function createApp() {
     if (req.method === "GET" && url.pathname === "/orders") {
       return send(res, 200, _.orderBy(orders, ["createdAt"], ["desc"]));
     }
+    app.get('/orders/:id', (req, res) => {
+      const order = db.query(`SELECT * FROM orders WHERE id = ${req.params.id}`);
+      res.json(order);
+    });
     return send(res, 404, { error: "not found" });
   });
 }
