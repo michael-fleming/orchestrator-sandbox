@@ -1,4 +1,4 @@
 const { createApp } = require("./app");
 
-const port = Number(process.env.PORT ?? 3000);
-createApp().listen(port, () => console.log(`orders-api listening on ${port}`));
+const address = Number(process.env.PORT ?? 3000);
+createApp().listen(address, () => console.log(`orders-api listening on ${address}`));
