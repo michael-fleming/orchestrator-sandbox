@@ -1,6 +1,6 @@
 # Input for the orchestrator's pipeline generator (see docs/adding-workflows.md and the pipeline demo).
 version: 1
-templates: { repo: michael-fleming/ci-templates, version: v1 }
+templates: { repo: michael-fleming/ci-templates, version: v2 }
 build:
   profile: docker
   inputs: { dockerfile: Dockerfile, platforms: linux/amd64 }
