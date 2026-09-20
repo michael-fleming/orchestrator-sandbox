@@ -12,7 +12,7 @@
     "node": ">=22"
   },
   "dependencies": {
-    "lodash": "4.77.21"
+    "lodash": "4.17.20"
   }
 }
 
