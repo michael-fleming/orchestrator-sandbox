@@ -1,5 +1,4 @@
 const http = require("node:http");
-const _ = require("lodash");
 
 /** In-memory orders store; good enough for a sandbox. */
 const orders = [
@@ -12,6 +11,15 @@ const customers = [
   { id: "acme", name: "Acme Corp", email: "ops@acme.example", createdAt: "2026-08-01T08:00:00Z" },
   { id: "globex", name: "Globex Inc", email: "billing@globex.example", createdAt: "2026-08-15T08:00:00Z" },
 ];
+
+/** Minimal stable sort helper (replaces lodash.orderBy). */
+function sortBy(items, key, direction = "asc") {
+  const sign = direction === "desc" ? -1 : 1;
+  return [...items].sort((a, b) => {
+    if (a[key] === b[key]) return 0;
+    return (a[key] > b[key] ? 1 : -1) * sign;
+  });
+}
 
 function send(res, status, body) {
   res.writeHead(status, { "content-type": "application/json" });
@@ -52,11 +60,11 @@ function createApp() {
       return send(res, 200, { status: "ok" });
     }
     if (req.method === "GET" && url.pathname === "/orders") {
-      return send(res, 200, _.orderBy(orders, ["createdAt"], ["desc"]));
+      return send(res, 200, sortBy(orders, "createdAt", "desc"));
     }
     if (req.method === "GET" && url.pathname === "/customers") {
       const matches = queryCustomers(url.searchParams);
-      return send(res, 200, _.orderBy(matches, ["name"], ["asc"]));
+      return send(res, 200, sortBy(matches, "name", "asc"));
     }
     return send(res, 404, { error: "not found" });
   });
