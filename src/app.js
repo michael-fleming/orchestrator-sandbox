@@ -7,6 +7,11 @@ const orders = [
   { id: "1002", customer: "globex", total: 18.0, createdAt: "2026-09-02T09:30:00Z" },
 ];
 
+/** Text shown on the index page. */
+const PAGE_TEXT =
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod " +
+  "tempor incididunt ut labore et dolore magna aliqua.";
+
 function send(res, status, body) {
   res.writeHead(status, { "content-type": "application/json" });
   res.end(JSON.stringify(body));
@@ -16,6 +21,10 @@ function createApp() {
   return http.createServer((req, res) => {
     const url = new URL(req.url, "http://localhost");
 
+    if (req.method === "GET" && url.pathname === "/") {
+      res.writeHead(200, { "content-type": "text/plain; charset=utf-8" });
+      return res.end(PAGE_TEXT);
+    }
     if (req.method === "GET" && url.pathname === "/health") {
       return send(res, 200, { status: "ok" });
     }
@@ -26,4 +35,5 @@ function createApp() {
   });
 }
 
-module.exports = { createApp, orders };
+module.exports = { createApp, orders, PAGE_TEXT };
+
