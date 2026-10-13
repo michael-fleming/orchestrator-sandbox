@@ -1,5 +1,4 @@
 const http = require("node:http");
-const _ = require("lodash");
 
 /** In-memory orders store; good enough for a sandbox. */
 const orders = [
@@ -17,6 +16,18 @@ const customers = [
 function send(res, status, body) {
   res.writeHead(status, { "content-type": "application/json" });
   res.end(JSON.stringify(body));
+}
+
+/** Return a copy of `items` sorted by `key` in the given order ("asc" or "desc"). */
+function orderBy(items, key, order) {
+  const direction = order === "asc" ? 1 : -1;
+  return [...items].sort((a, b) => {
+    const left = a[key];
+    const right = b[key];
+    if (left < right) return -direction;
+    if (left > right) return direction;
+    return 0;
+  });
 }
 
 /**
@@ -44,7 +55,7 @@ function queryCustomers(params) {
   }
 
   const sortKey = ["id", "name", "email", "createdAt"].includes(sort) ? sort : "createdAt";
-  return _.orderBy(result, [sortKey], [order]);
+  return orderBy(result, sortKey, order);
 }
 
 function createApp() {
@@ -55,7 +66,7 @@ function createApp() {
       return send(res, 200, { status: "ok" });
     }
     if (req.method === "GET" && url.pathname === "/orders") {
-      return send(res, 200, _.orderBy(orders, ["createdAt"], ["desc"]));
+      return send(res, 200, orderBy(orders, "createdAt", "desc"));
     }
     if (req.method === "GET" && url.pathname === "/customers") {
       return send(res, 200, queryCustomers(url.searchParams));

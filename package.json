@@ -11,8 +11,6 @@
   "engines": {
     "node": ">=22"
   },
-  "dependencies": {
-    "lodash": "4.17.21"
-  }
+  "dependencies": {}
 }
 
