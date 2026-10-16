@@ -4,6 +4,8 @@ A deliberately small Node service for exercising the agent orchestrator end to e
 real PRs, GitHub Actions builds, and Grype scans.
 
 - `GET /health`, `GET /orders` (and `GET /orders/:id` once the first change set is applied)
+- `GET /customers` — query customers, optionally filtered with `?id=`, `?country=` and `?q=`
+  (free-text match on id or name); results are sorted by name
 - Tests: `npm test` (Node's built-in test runner)
 - Container: `docker build -t orders-api .`
 
@@ -12,3 +14,4 @@ in 4.17.21. The first orchestrator run should fail the scan and send the work ba
 
 `.orchestrator/test-changes/` holds the scripted coder's change sets (see `.orchestrator/CHANGE-SETS.md`).
 `.github/workflows/orchestrator-*.yml` are thin callers of the shared `ci-templates` workflows.
+
