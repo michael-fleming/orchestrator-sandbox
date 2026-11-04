@@ -22,3 +22,35 @@ test("lists orders newest first", async () => {
   const body = await (await fetch(`${base}/orders`)).json();
   assert.deepStrictEqual(body.map((o) => o.id), ["1002", "1001"]);
 });
+
+test("lists customers by name", async () => {
+  const res = await fetch(`${base}/customers`);
+  assert.strictEqual(res.status, 200);
+  const body = await res.json();
+  assert.deepStrictEqual(body.map((c) => c.id), ["acme", "globex"]);
+});
+
+test("filters customers by id", async () => {
+  const body = await (await fetch(`${base}/customers?id=globex`)).json();
+  assert.deepStrictEqual(body.map((c) => c.id), ["globex"]);
+});
+
+test("filters customers by name substring", async () => {
+  const body = await (await fetch(`${base}/customers?name=acme`)).json();
+  assert.deepStrictEqual(body.map((c) => c.id), ["acme"]);
+});
+
+test("searches customers across fields and honours limit", async () => {
+  const byEmail = await (await fetch(`${base}/customers?q=globex.example`)).json();
+  assert.deepStrictEqual(byEmail.map((c) => c.id), ["globex"]);
+
+  const limited = await (await fetch(`${base}/customers?limit=1`)).json();
+  assert.strictEqual(limited.length, 1);
+});
+
+test("unknown customer query returns empty list", async () => {
+  const res = await fetch(`${base}/customers?id=nope`);
+  assert.strictEqual(res.status, 200);
+  assert.deepStrictEqual(await res.json(), []);
+});
+
