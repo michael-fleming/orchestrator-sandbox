@@ -22,3 +22,27 @@ test("lists orders newest first", async () => {
   const body = await (await fetch(`${base}/orders`)).json();
   assert.deepStrictEqual(body.map((o) => o.id), ["1002", "1001"]);
 });
+
+test("lists customers newest first", async () => {
+  const res = await fetch(`${base}/customers`);
+  assert.strictEqual(res.status, 200);
+  const body = await res.json();
+  assert.deepStrictEqual(body.map((c) => c.id), ["globex", "acme"]);
+});
+
+test("filters customers by id", async () => {
+  const body = await (await fetch(`${base}/customers?id=acme`)).json();
+  assert.deepStrictEqual(body.map((c) => c.id), ["acme"]);
+});
+
+test("searches customers by name or email", async () => {
+  const byName = await (await fetch(`${base}/customers?q=globex`)).json();
+  assert.deepStrictEqual(byName.map((c) => c.id), ["globex"]);
+
+  const byEmail = await (await fetch(`${base}/customers?q=ops@acme`)).json();
+  assert.deepStrictEqual(byEmail.map((c) => c.id), ["acme"]);
+
+  const none = await (await fetch(`${base}/customers?q=nosuchcustomer`)).json();
+  assert.deepStrictEqual(none, []);
+});
+
